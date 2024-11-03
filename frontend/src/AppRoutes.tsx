@@ -10,16 +10,14 @@ const AppRoutes = () => {
         <Routes>
             <Route path="/" element={<Layout showHero><Home /></Layout>} />
             <Route path="/auth-callback" element={<AuthCallbackPage />} />
-            <Route element={<ProtectedRoute />}>
-                <Route
-                    path="/user"
-                    element={
-                        <Layout>
-                            <UserProfilePage />
-                        </Layout>
-                    }
-                />
-            </Route>
+            <Route
+                path="/user"
+                element={
+                    <Layout>
+                        <ProtectedRoute component={UserProfilePage} />
+                    </Layout>
+                }
+            />
             <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     )

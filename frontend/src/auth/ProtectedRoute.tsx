@@ -1,9 +1,19 @@
-import { useAuth0 } from "@auth0/auth0-react"
-import { Navigate, Outlet } from "react-router-dom"
+import { ComponentType } from 'react';
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 
-const ProtectedRoute = () => {
-    const { isAuthenticated } = useAuth0()
-    return isAuthenticated ? (<Outlet />) : (<Navigate to={"/"} replace />)
+interface ProtectedRouteProps {
+    component: ComponentType;
 }
 
-export default ProtectedRoute
+const ProtectedRoute = ({ component }: ProtectedRouteProps): JSX.Element => {
+    const Component = withAuthenticationRequired(component, {
+        returnTo: "/",
+        onRedirecting: () => (
+            <div>Loading</div>
+        ),
+    });
+
+    return <Component />;
+}
+
+export default ProtectedRoute;
