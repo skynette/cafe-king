@@ -3,6 +3,7 @@ import cors from "cors"
 import "dotenv/config"
 import mongoose from "mongoose"
 import myUserRoute from "./routes/MyUserRoute"
+import { v2 as cloudinary } from "cloudinary"
 
 const uri = process.env.MONGODB_CONNECTION_STRING as string
 
@@ -11,11 +12,17 @@ console.log({ uri })
 mongoose
     .connect(process.env.MONGODB_CONNECTION_STRING as string)
     .then(() => {
-        console.log("Connection Successfull");
+        console.log("Connection Successful");
     })
     .catch((error) => {
-        console.log("Connection Unsuccessfull, reason", error.message);
+        console.log("Connection Unsuccessful, reason", error.message);
     });
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+})
 
 const app = express()
 app.use(express.json())
