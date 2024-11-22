@@ -4,6 +4,7 @@ import Home from "./pages/home"
 import AuthCallbackPage from "./pages/AuthCallbackPage"
 import UserProfilePage from "./pages/user-profile"
 import ProtectedRoute from "./auth/ProtectedRoute"
+import ManageRestaurant from "./pages/manage-restaurant"
 
 const AppRoutes = () => {
     return (
@@ -15,6 +16,14 @@ const AppRoutes = () => {
                 element={
                     <Layout>
                         <ProtectedRoute component={UserProfilePage} />
+                    </Layout>
+                }
+            />
+            <Route
+                path="/manage-restaurant"
+                element={
+                    <Layout>
+                        <ProtectedRoute component={ManageRestaurant} />
                     </Layout>
                 }
             />
