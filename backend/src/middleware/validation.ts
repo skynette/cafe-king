@@ -4,7 +4,7 @@ import { body, validationResult } from "express-validator";
 const handleValidationErrors = async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        return res.status(400).json({ erros: errors.array() })
+        return res.status(400).json({ errors: errors.array() })
     }
     next()
 }
@@ -25,7 +25,7 @@ export const validateMyRestaurantRequest = [
     body("estimatedDeliveryTime").isInt({min: 0}).withMessage("estimatedDeliveryTime must be a positive integer"),
     body("cuisines").isArray().withMessage("cusines must be an array").not().isEmpty().withMessage("array cannot be empty"),
     body("menuItems").isArray().withMessage("menu items must be an array"),
-    body("menuItems.*name").notEmpty().withMessage("menu item name is required"),
-    body("menuItems.*price").isFloat({min: 0}).withMessage("menu item price must be positive integer"),
+    body("menuItems.*.name").notEmpty().withMessage("menu item name is required"),
+    body("menuItems.*.price").isFloat({min: 0}).withMessage("menu item price must be positive integer"),
     handleValidationErrors,
 ]
