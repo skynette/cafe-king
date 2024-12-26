@@ -5,7 +5,6 @@ import CusineCheckbox from './cuisine-checkbox'
 
 const CuisineSection = () => {
     const { control } = useFormContext()
-    console.log({ cuisineList })
     return (
         <div className='space-y-2'>
             <div>
