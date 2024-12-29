@@ -23,7 +23,7 @@ type SearchBarProps = {
 
 export type SearchForm = z.infer<typeof formSchema>
 
-const SearchBar = ({ onSubmit, placeholder, onReset, searchQuery }: SearchBarProps) => {
+const SearchBar = ({ onSubmit, placeholder, onReset, searchQuery="" }: SearchBarProps) => {
     const form = useForm<SearchForm>({
         resolver: zodResolver(formSchema),
         defaultValues: {
