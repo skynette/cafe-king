@@ -27,9 +27,14 @@ const searchRestaurant = async (req: Request, res: Response) => {
         }
 
         if (selectedCuisines) {
-            const cuisinesArray = selectedCuisines.split(",").map((cuisine) => new RegExp(cuisine, "i"));
-
-            query['cuisines'] = { $all: cuisinesArray }
+            const escapeRegex = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escapes special characters
+            const cuisinesArray = selectedCuisines
+                .split(",")
+                .map((cuisine) => new RegExp(escapeRegex(cuisine), "i"));
+        
+            console.log({ cuisinesArray });
+        
+            query['cuisines'] = { $all: cuisinesArray };
         }
 
         if (searchQuery) {
