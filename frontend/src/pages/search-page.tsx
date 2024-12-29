@@ -1,4 +1,5 @@
 import { useSearchRestaurants } from '@/api/RestaurantApi'
+import PaginationSelector from '@/components/pagination-selector';
 import SearchResultInfo from '@/components/search-result-info';
 import SearhResultsCard from '@/components/search-results-card';
 import SearchBar, { SearchForm } from '@/components/searchbar';
@@ -8,12 +9,14 @@ import { useParams } from 'react-router-dom'
 
 export type SearchState = {
     searchQuery: string
+    page: number
 }
 
 const SearchPage = () => {
     const { city } = useParams()
     const [searchState, setSearchState] = useState<SearchState>({
-        searchQuery: ""
+        searchQuery: "",
+        page: 1
     })
     const { results, isLoading } = useSearchRestaurants(searchState, city);
 
@@ -25,10 +28,18 @@ const SearchPage = () => {
         return <span>No results found</span>
     }
 
+    const setPage = (page: number) => {
+        setSearchState((prevState) => ({
+            ...prevState,
+            page
+        }))
+    }
+
     const setSearchQuery = async (searchFormData: SearchForm) => {
         setSearchState((prevState) => ({
             ...prevState,
             searchQuery: searchFormData.searchQuery,
+            page: 1,
         }))
     }
 
@@ -36,6 +47,7 @@ const SearchPage = () => {
         setSearchState((prevState) => ({
             ...prevState,
             searchQuery: "",
+            page: 1,
         }))
     }
 
@@ -60,6 +72,7 @@ const SearchPage = () => {
                         {index < results.data.length - 1 && <Separator />}
                     </>
                 ))}
+                <PaginationSelector page={results.pagination.page} pages={results.pagination.pages} onPageChange={setPage} />
             </div>
         </div>
     )
