@@ -5,7 +5,7 @@ import AuthCallbackPage from "./pages/AuthCallbackPage"
 import UserProfilePage from "./pages/user-profile"
 import ProtectedRoute from "./auth/ProtectedRoute"
 import ManageRestaurant from "./pages/manage-restaurant"
-import SearchPage from "./pages/search-pagge"
+import SearchPage from "./pages/search-page"
 
 const AppRoutes = () => {
     return (
