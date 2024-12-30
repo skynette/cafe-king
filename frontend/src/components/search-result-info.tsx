@@ -13,7 +13,6 @@ const SearchResultInfo = ({ city, total }: SearchResultInfoProps) => {
                 {total} Restautants found in  {city}
                 <Link to={"/"} className="ml-2 text-sm font-semibold underline cursor-pointer text-primary">Change location</Link>
             </span>
-            sorting dropdown here
         </div>
     )
 }
