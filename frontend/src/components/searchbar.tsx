@@ -49,7 +49,7 @@ const SearchBar = ({ onSubmit, placeholder, onReset, searchQuery }: SearchBarPro
         <Form {...form}>
             <form
                 className={
-                    cn('flex items-center flex-1 gap-3 justify-between flex-row border-2 rounded-full p-3',
+                    cn('flex items-center gap-3 justify-between flex-row border-2 rounded-full p-3',
                         { 'border-red-500': form.formState.errors.searchQuery }
                     )}
                 onSubmit={form.handleSubmit(onSubmit)}

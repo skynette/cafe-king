@@ -1,4 +1,5 @@
 import { useSearchRestaurants } from '@/api/RestaurantApi'
+import CuisineFilter from '@/components/cuisine-filter';
 import PaginationSelector from '@/components/pagination-selector';
 import SearchResultInfo from '@/components/search-result-info';
 import SearhResultsCard from '@/components/search-results-card';
@@ -10,14 +11,19 @@ import { useParams } from 'react-router-dom'
 export type SearchState = {
     searchQuery: string
     page: number
+    selectedCuisines: string[]
 }
 
 const SearchPage = () => {
     const { city } = useParams()
     const [searchState, setSearchState] = useState<SearchState>({
         searchQuery: "",
-        page: 1
+        page: 1,
+        selectedCuisines: [],
     })
+
+    const [isExpanded, setIsExpanded] = useState<boolean>(false)
+
     const { results, isLoading } = useSearchRestaurants(searchState, city);
 
     if (isLoading) {
@@ -26,6 +32,14 @@ const SearchPage = () => {
 
     if (!results?.data || !city) {
         return <span>No results found</span>
+    }
+
+    const setSelectedCuisines = (selectedCuisines: string[]) => {
+        setSearchState((prevState) => ({
+            ...prevState,
+            selectedCuisines,
+            page: 1,
+        }))
     }
 
     const setPage = (page: number) => {
@@ -52,9 +66,14 @@ const SearchPage = () => {
     }
 
     return (
-        <div className='grid grid-cols-1 md:grid-cols-[220px_1fr] gap-5'>
+        <div className='grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-5'>
             <div id="cuisines-list">
-                list of cuisines
+                <CuisineFilter
+                    isExpanded={isExpanded}
+                    onExpandedClick={() => setIsExpanded((prev) => !prev)}
+                    selectedCuisines={searchState.selectedCuisines}
+                    onChange={setSelectedCuisines}
+                />
             </div>
 
             <div id='main-content' className='flex flex-col gap-5'>
