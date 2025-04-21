@@ -1,9 +1,10 @@
 import { useGetRestaurantById } from "@/api/RestaurantApi"
+import CheckoutButton from "@/components/checkout-button"
 import MenuItem from "@/components/menu-item"
 import OrderSummary from "@/components/order-summary"
 import RestaurantInfo from "@/components/restaurant-info"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Card } from "@/components/ui/card"
+import { Card, CardFooter } from "@/components/ui/card"
 import { MenuItem as MenuItemType } from "@/types"
 import { useState } from "react"
 import { useParams } from "react-router-dom"
@@ -19,7 +20,10 @@ const RestaurantDetailPage = () => {
     const { restaurantId } = useParams()
     const { restaurant, isLoading } = useGetRestaurantById(restaurantId)
 
-    const [cartItems, setCartItems] = useState<CartIem[]>([])
+    const [cartItems, setCartItems] = useState<CartIem[]>(() => {
+        const storedCartItems = sessionStorage.getItem(`cartItems-${restaurantId}`)
+        return storedCartItems ? JSON.parse(storedCartItems) : []
+    })
 
     const addToCart = (item: MenuItemType) => {
         setCartItems((prevCartItems) => {
@@ -34,6 +38,8 @@ const RestaurantDetailPage = () => {
                 updatedCartItems = [...prevCartItems, { ...item, quantity: 1 }]
             }
             
+            // save to session storage
+            sessionStorage.setItem(`cartItems-${restaurantId}`, JSON.stringify(updatedCartItems))
             return updatedCartItems
         })
     }
@@ -41,6 +47,7 @@ const RestaurantDetailPage = () => {
     const removeFromCart = (item: MenuItemType) => {
         setCartItems((prevCartItems) => {
             const updatedCartItems = prevCartItems.filter((cartItem) => cartItem._id !== item._id)
+            sessionStorage.setItem(`cartItems-${restaurantId}`, JSON.stringify(updatedCartItems))
             return updatedCartItems
         })
     }   
@@ -67,6 +74,9 @@ const RestaurantDetailPage = () => {
                 <div>
                     <Card>
                         <OrderSummary restaurant={restaurant} cartItems={cartItems} removeFromCart={removeFromCart}/>
+                        <CardFooter>
+                            <CheckoutButton />
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
