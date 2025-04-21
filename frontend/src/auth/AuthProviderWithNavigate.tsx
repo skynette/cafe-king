@@ -1,4 +1,4 @@
-import { Auth0Provider } from "@auth0/auth0-react";
+import { AppState, Auth0Provider } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -20,8 +20,8 @@ const AuthProviderWithNavigate = ({ children }: Props) => {
     }
 
     // called when the user finally gets logged in
-    const onRedirectCallback = () => {
-        navigate("/auth-callback")
+    const onRedirectCallback = (appState?: AppState) => {
+        navigate(appState?.returnTo || "/auth-callback")
     }
 
     return (
