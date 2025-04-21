@@ -24,9 +24,10 @@ type Props = {
     onSave: (userProfileData: UserFormData) => void
     isLoading: boolean
     isCheckout?: boolean
+    buttonText?: string
 }
 
-const UserProfileForm = ({ onSave, isLoading, currentUser, isCheckout }: Props) => {
+const UserProfileForm = ({ onSave, isLoading, currentUser, isCheckout, buttonText }: Props) => {
     const form = useForm<UserFormData>({
         resolver: zodResolver(formSchema),
         defaultValues: currentUser,
@@ -122,7 +123,7 @@ const UserProfileForm = ({ onSave, isLoading, currentUser, isCheckout }: Props) 
                         )}
                     />
                 </div>
-                {isLoading ? <LoadingButton /> : <Button type="submit" className="">Submit</Button>
+                {isLoading ? <LoadingButton /> : <Button type="submit" className="">{buttonText || "Submit"}</Button>
                 }
             </form>
         </Form>

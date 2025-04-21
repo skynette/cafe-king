@@ -45,7 +45,7 @@ const CheckoutButton = ({ onCheckout, disabled }: CheckoutButtonProps) => {
                         Please fill in your details to complete the checkout process
                     </DialogDescription>
                 </DialogHeader>
-                <UserProfileForm currentUser={currentUser} onSave={onCheckout} isLoading={isGetUserLoading} isCheckout/>
+                <UserProfileForm currentUser={currentUser} onSave={onCheckout} isLoading={isGetUserLoading} isCheckout buttonText="Continue to payment"/>
             </DialogContent>
         </Dialog>
     )
