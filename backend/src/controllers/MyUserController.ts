@@ -6,12 +6,13 @@ const getCurrentUser = async (req: Request, res: Response) => {
     try {
         const currUser = await User.findOne({ _id: req.userId })
         if (!currUser) {
-            return res.status(404).json({ message: "user not found" })
+            res.status(404).json({ message: "user not found" })
+            return;
         }
         res.json(currUser.toObject())
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ message: "Something went wrong" })
+        res.status(500).json({ message: "Something went wrong" })
     }
 }
 
