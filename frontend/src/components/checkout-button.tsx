@@ -9,9 +9,10 @@ import { useGetMyUser } from "@/api/MyUserAPI"
 type CheckoutButtonProps = {
     onCheckout: (userFormData: UserFormData) => void
     disabled?: boolean
+    isLoading?: boolean
 }
 
-const CheckoutButton = ({ onCheckout, disabled }: CheckoutButtonProps) => {
+const CheckoutButton = ({ onCheckout, disabled, isLoading }: CheckoutButtonProps) => {
     const { isAuthenticated, isLoading: isAuthLoading, loginWithRedirect } = useAuth0()
     const { pathname } = useLocation()
     const { currentUser, isLoading: isGetUserLoading } = useGetMyUser()
@@ -27,7 +28,7 @@ const CheckoutButton = ({ onCheckout, disabled }: CheckoutButtonProps) => {
         return <Button onClick={onLogin} className="flex-1">Login to checkout</Button>
     }
 
-    if (isAuthLoading || !currentUser) {
+    if (isAuthLoading || !currentUser || isLoading) {
         return <LoadingButton />
     }
 

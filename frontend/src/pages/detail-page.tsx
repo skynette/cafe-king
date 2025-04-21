@@ -1,3 +1,4 @@
+import { CheckoutSessionRequest, useCreateCheckoutSession } from "@/api/OrderAPI"
 import { useGetRestaurantById } from "@/api/RestaurantApi"
 import CheckoutButton from "@/components/checkout-button"
 import MenuItem from "@/components/menu-item"
@@ -9,7 +10,7 @@ import { UserFormData } from "@/forms/user-profle-form/user-profile-form"
 import { MenuItem as MenuItemType } from "@/types"
 import { useState } from "react"
 import { useParams } from "react-router-dom"
-
+import { toast } from "sonner"
 export type CartIem = {
     _id: string
     name: string
@@ -20,6 +21,7 @@ export type CartIem = {
 const RestaurantDetailPage = () => {
     const { restaurantId } = useParams()
     const { restaurant, isLoading } = useGetRestaurantById(restaurantId)
+    const { createCheckoutSession, isCreatingCheckoutSession, error, reset } = useCreateCheckoutSession()
 
     const [cartItems, setCartItems] = useState<CartIem[]>(() => {
         const storedCartItems = sessionStorage.getItem(`cartItems-${restaurantId}`)
@@ -30,7 +32,7 @@ const RestaurantDetailPage = () => {
         setCartItems((prevCartItems) => {
             const existingItem = prevCartItems.find((cartItem) => cartItem._id === item._id)
             let updatedCartItems;
-            
+
             if (existingItem) {
                 updatedCartItems = prevCartItems.map((cartItem) => cartItem._id === item._id
                     ? { ...cartItem, quantity: cartItem.quantity + 1 }
@@ -38,7 +40,7 @@ const RestaurantDetailPage = () => {
             } else {
                 updatedCartItems = [...prevCartItems, { ...item, quantity: 1 }]
             }
-            
+
             // save to session storage
             sessionStorage.setItem(`cartItems-${restaurantId}`, JSON.stringify(updatedCartItems))
             return updatedCartItems
@@ -52,9 +54,33 @@ const RestaurantDetailPage = () => {
             return updatedCartItems
         })
     }
-    
-    const onCheckout = (userFormData: UserFormData) => {
+
+    const onCheckout = async (userFormData: UserFormData) => {
         console.log("userFormData", userFormData)
+
+        const checkoutData = {
+            cartItems: cartItems.map((item) => ({
+                menuItems: item._id,
+                name: item.name,
+                quantity: item.quantity.toString()
+            })),
+            restaurantId: restaurantId,
+            deliveryDetails: {
+                name: userFormData.name,
+                addressLine1: userFormData.addressLine1,
+                city: userFormData.city,
+                country: userFormData.country,
+                email: userFormData.email,
+            }
+        }
+
+        try {
+            const data = await createCheckoutSession(checkoutData as CheckoutSessionRequest)
+            window.location.href = data.url
+        } catch (error) {
+            console.error(error)
+            toast.error("Failed to create checkout session")
+        }
     }
 
     if (isLoading || !restaurant) {
@@ -72,15 +98,15 @@ const RestaurantDetailPage = () => {
                     <RestaurantInfo restaurant={restaurant} />
                     <span className="text-2xl font-bold tracking-tight">Menu</span>
                     {restaurant.menuItems.map((item) => (
-                        <MenuItem menuItem={item} addToCart={() => addToCart(item)}/>
+                        <MenuItem menuItem={item} addToCart={() => addToCart(item)} />
                     ))}
                 </div>
 
                 <div>
                     <Card>
-                        <OrderSummary restaurant={restaurant} cartItems={cartItems} removeFromCart={removeFromCart}/>
+                        <OrderSummary restaurant={restaurant} cartItems={cartItems} removeFromCart={removeFromCart} />
                         <CardFooter>
-                            <CheckoutButton disabled={cartItems.length === 0} onCheckout={onCheckout}/>
+                            <CheckoutButton disabled={cartItems.length === 0} onCheckout={onCheckout} isLoading={isCreatingCheckoutSession} />
                         </CardFooter>
                     </Card>
                 </div>
